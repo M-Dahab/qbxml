@@ -5,13 +5,13 @@ module Qbxml::Types
     :qbpos => :qbposxml
   }.freeze
 
-  FLOAT_CAST = Proc.new {|d| d ? d.to_f : 0.0}
+  FLOAT_CAST = proc { |d| d ? d.remove_trailing_zeros : 0.0 }
+  BIGDECIMAL_CAST = proc { |d| d ? BigDecimal(d).remove_trailing_zeros : 0.0 }
   BOOL_CAST  = Proc.new {|d| d ? (d.to_s.downcase == 'true' ? true : false) : false }
   DATE_CAST  = Proc.new {|d| d ? Date.parse(d).strftime("%Y-%m-%d") : Date.today.strftime("%Y-%m-%d") }
   TIME_CAST  = Proc.new {|d| d ? Time.parse(d).xmlschema : Time.now.xmlschema }
   INT_CAST   = Proc.new {|d| d ? Integer(d.to_i) : 0 }
   STR_CAST   = Proc.new {|d| d ? String(d) : ''}
-  BIGDECIMAL_CAST = Proc.new {|d| d ? BigDecimal(d) : 0.0}
 
   TYPE_MAP= {
     "AMTTYPE"          => FLOAT_CAST,
